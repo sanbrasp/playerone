@@ -3,5 +3,5 @@
 internal class Genre
 {
     public int GenreId { get; init; }
-    public string GenreName { get; init; }
+    public required string GenreName { get; init; }
 }
