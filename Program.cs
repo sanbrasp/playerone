@@ -17,8 +17,59 @@ if (string.IsNullOrWhiteSpace(settings?.ConnectionString))
 var connectionString = settings.ConnectionString;
 
 
-// Single repository instance
+// Repos
 var repo = new GameRepository(connectionString);
+var userRepo = new UserRepository(connectionString);
+
+// === Login / First-time setup ===
+User? currentUser = null;
+
+var users = userRepo.GetAllUsers();
+if (users.Count == 0)
+{
+    Console.WriteLine("\n==== Welcome to PlayerOne! ===");
+    Console.WriteLine("No users found - Create your user!");
+    
+    var username = InputHelpers.ReadRequiredString("Username: ");
+
+    string password;
+    while (true)
+    {
+        password = InputHelpers.ReadRequiredString("Create your password (6 characters): ");
+        if (password.Length == 6) break;
+        Console.WriteLine("Password must be exactly 6 characters long.");
+    }
+    
+    userRepo.AddUser(username, password);
+    currentUser = userRepo.Login(username, password);
+    Console.WriteLine($"\n✔️ Welcome, {currentUser.Username}! Your user account has been created.");
+}
+else
+{
+    // Login
+    Console.WriteLine("\n=== 👾 PlayerOne 🎮 ===");
+    Console.WriteLine("Who is logging in?");
+
+    foreach (var user in users)
+        Console.WriteLine($"[{IdFormatter.User(user.UserId)}] {user.Username}");
+
+    while (true)
+    {
+        Console.Write("\nUsername: ");
+        var username = Console.ReadLine()?.Trim();
+        var password = InputHelpers.ReadRequiredString("Input your password (6 characters): ");
+        
+        currentUser = userRepo.Login(username!,  password);
+
+        if (currentUser != null)
+        {
+            Console.WriteLine($"✔️ Welcome back, {currentUser.Username}!");
+            break;
+        }
+
+        Console.WriteLine("Invalid username or password.");
+    }
+}
 
 // ==== Main Loop ====
 bool running = true;
@@ -61,7 +112,8 @@ void ViewGames()
         Console.WriteLine(
             $"- [{IdFormatter.Game(game.GameId)}] {game.Title} ({game.ReleaseYear})\n" +
             $"- [{IdFormatter.Platform(game.PlatformId)}]: {game.PlatformName}\n" +
-            $"- [{IdFormatter.Genre(game.GenreId)}]: {game.GenreName}");
+            $"- [{IdFormatter.Genre(game.GenreId)}]: {game.GenreName}\n" +
+            $"- Added: {game.AddedOn:dd.MM.yyyy HH:mm} by user: {game.AddedByUserName}");
     }
 }
 
@@ -122,6 +174,8 @@ void AddGame()
         PlatformName = selectedPlatform.PlatformName,
         GenreName = selectedGenre.GenreName,
         GenreId = selectedGenre.GenreId,
+        AddedByUserID = currentUser!.UserId,
+        AddedByUserName = currentUser!.Username
     };
 
     repo.AddGame(game);
