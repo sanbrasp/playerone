@@ -1,0 +1,11 @@
+﻿stages: 
+  - security
+
+gitleaks: 
+  stage: security
+  image: zricethezav/gitleaks:latest
+  script: 
+    - gitleaks detect --source . --verbose
+  only: 
+    - main
+    - merge_requests
