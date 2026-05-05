@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS games (
     genre_id INT NOT NULL,
     release_year INT NOT NULL,
     added_by INT NOT NULL,
+    added_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (platform_id) REFERENCES platforms(platformid),
     FOREIGN KEY (genre_id) REFERENCES genres(genreid),
     FOREIGN KEY (added_by) REFERENCES users(userid)
