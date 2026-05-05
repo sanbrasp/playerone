@@ -34,10 +34,10 @@ while (running)
 
     switch (InputHelpers.ReadMenuChoice("\nSelect an option: ", 0, 4))
     {
-        case 1: ViewGames(repo); break;
-        case 2: AddGame(repo); break;
-        case 3: ManagePlatforms(repo); break;
-        case 4: ManageGenres(repo); break;
+        case 1: ViewGames(); break;
+        case 2: AddGame(); break;
+        case 3: ManagePlatforms(); break;
+        case 4: ManageGenres(); break;
         case 0: running = false; break;
         default: Console.WriteLine("Invalid choice... You need to read more."); break;
     }
@@ -45,7 +45,7 @@ while (running)
 
 
 // ==== View Games ====
-void ViewGames(GameRepository repo)
+void ViewGames()
 {
     var games = repo.GetAllGames();
     
@@ -67,7 +67,7 @@ void ViewGames(GameRepository repo)
 
 
 // ==== Add Game ====
-void AddGame(GameRepository repo)
+void AddGame()
 {
     var title = InputHelpers.ReadRequiredString("\nGame Title: ");
 
@@ -104,21 +104,24 @@ void AddGame(GameRepository repo)
 
 
     // === Genres ===
-    int genreId = PickOrCreateGenre(repo);
-    if (genreId == 0)
+    var selectedGenre = PickOrCreateGenre();
+    if (selectedGenre == null)
     {
         Console.WriteLine("Cancelling...");
         return;
     }
 
-
+    var selectedPlatform = platforms.First(p => p.PlatformId == platformId);
+    
     // Build the game object, repo handles the insert
     var game = new Game
     {
         Title = title,
         ReleaseYear = year,
         PlatformId = platformId,
-        GenreId = genreId
+        PlatformName = selectedPlatform.PlatformName,
+        GenreName = selectedGenre.GenreName,
+        GenreId = selectedGenre.GenreId,
     };
 
     repo.AddGame(game);
@@ -128,7 +131,7 @@ void AddGame(GameRepository repo)
 
 
 // ==== Manage Platforms ====
-void ManagePlatforms(GameRepository repo)
+void ManagePlatforms()
 {
     var platforms = repo.GetAllPlatforms();
 
@@ -162,7 +165,7 @@ void ManagePlatforms(GameRepository repo)
 
 
 // ==== Manage Genres ====
-void ManageGenres(GameRepository repo)
+void ManageGenres()
 {
     var genres = repo.GetAllGenres();
 
@@ -196,7 +199,7 @@ void ManageGenres(GameRepository repo)
 
 // Lets the user pick an existing genre or create a new one inline.
 // Returns 0 if the user cancels.
-int PickOrCreateGenre(GameRepository repo)
+Genre? PickOrCreateGenre()
 {
     while (true)
     {
@@ -222,7 +225,7 @@ int PickOrCreateGenre(GameRepository repo)
         var input = Console.ReadLine()?.Trim().ToLower();
 
         if (input == "0")
-            return 0;
+            return null;
 
         if (input == "c")
         {
@@ -234,9 +237,11 @@ int PickOrCreateGenre(GameRepository repo)
         }
 
         // Try to parse as a number and validate against the list
-        if (int.TryParse(input, out int picked) &&
-            genres.Any(g => g.GenreId == picked))
-            return picked;
+        if (int.TryParse(input, out int picked))
+        {
+            var selected = genres.FirstOrDefault(g => g.GenreId == picked);
+            if (selected != null) return selected;
+        }
 
         Console.WriteLine("Invalid choice — enter a genre ID, C to create, or 0 to cancel.");
     }
