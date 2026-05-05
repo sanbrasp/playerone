@@ -18,11 +18,16 @@ I suggested that we might set up a database and store the data this way, and thu
 
 ## How to
 1. Clone the repo:  
-`<repo link here>`
+
+- Github:  
+`git clone repo git@github.com:sanbrasp/playerone.git`
+
+- Gitlab:  
+`git clone git@gitlab.com:sanbrasp/playerone.git`
 
 
 2. Navigate to the solution root with your terminal:  
-`<cd folder name here>`
+`cd PlayerOne`
 
 
 3. Restore or build the project:  
