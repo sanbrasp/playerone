@@ -10,4 +10,7 @@ internal class Game
     public int GenreId { get; init; }
     public required string GenreName { get; init; }
     public int ReleaseYear { get; init; }
+    public int AddedByUserID { get; init; }
+    public required string AddedByUserName { get; init; }
+    public DateTime AddedOn { get; init; }
 }
