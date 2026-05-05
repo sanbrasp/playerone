@@ -91,13 +91,14 @@ internal class GameRepository
         connection.Open();
 
         var command = new MySqlCommand(@"
-            INSERT INTO games (title, platform_id, genre_id, release_year)
-            VALUES (@title, @platformId, @genreId, @releaseYear)", connection);
+            INSERT INTO games (title, platform_id, genre_id, release_year, added_by)
+            VALUES (@title, @platformId, @genreId, @releaseYear, @addedBy)", connection);
 
         command.Parameters.AddWithValue("@title", game.Title);
         command.Parameters.AddWithValue("@platformId", game.PlatformId);
         command.Parameters.AddWithValue("@genreId", game.GenreId);
         command.Parameters.AddWithValue("@releaseYear", game.ReleaseYear);
+        command.Parameters.AddWithValue("@addedBy", game.AddedByUserID);
         command.ExecuteNonQuery();
     }
 
@@ -110,12 +111,14 @@ internal class GameRepository
 
 
         var command = new MySqlCommand(@"
-            SELECT g.gameid, g.title, g.release_year, 
+            SELECT g.gameid, g.title, g.release_year, g.added_on, 
             p.platformid, p.name AS platform_name,
-            ge.genreid, ge.name AS genre_name
+            ge.genreid, ge.name AS genre_name,
+            u.userid, u.username
             FROM games g
             JOIN platforms p ON g.platform_id = p.platformid
-            JOIN genres ge ON g.genre_id = ge.genreid", connection);
+            JOIN genres ge ON g.genre_id = ge.genreid
+            JOIN users u ON g.added_by = u.userid", connection);
 
         using var reader = command.ExecuteReader();
 
@@ -129,7 +132,10 @@ internal class GameRepository
                 PlatformId = reader.GetInt32("platformid"),
                 PlatformName = reader.GetString("platform_name"),
                 GenreId = reader.GetInt32("genreid"),
-                GenreName = reader.GetString("genre_name")
+                GenreName = reader.GetString("genre_name"),
+                AddedByUserID = reader.GetInt32("userid"),
+                AddedByUserName =  reader.GetString("username"),
+                AddedOn = reader.GetDateTime("added_on")
             });
         }
         return games;
