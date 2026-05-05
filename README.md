@@ -61,11 +61,12 @@ I suggested that we might set up a database and store the data this way, and thu
 
 ## Tools and technologies
 
-| Component | Name                 |
-|-----------|----------------------|
-| IDE       | Visual Studio, Rider |
-| Framework | .NET                 |
-| Languages | C#, MySQL            |
+| Component      | Name                 |
+|----------------|----------------------|
+| IDE            | Visual Studio, Rider |
+| Framework      | .NET                 |
+| Languages      | C#, MySQL            |
+| Virtualization | Docker Desktop       |
 
 ---
 
