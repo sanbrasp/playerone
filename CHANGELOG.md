@@ -9,8 +9,11 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 > Features planned or in progress
 
 - Delete and update games
-- Search and filter by platform or genre
+- Search and filter by platform, genre, name, added_by, added_at
 - Seed data for common platforms and genres
+- Fancify the console output using Spectre
+- Add more navigational freedom to the console
+- Tidy up the console output
 
 ---
 
