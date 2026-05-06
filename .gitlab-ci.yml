@@ -6,6 +6,3 @@ gitleaks:
   image: zricethezav/gitleaks:latest
   script:
     - gitleaks detect --source . --verbose
-  rules:
-    - if: '$CI_COMMIT_BRANCH'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
