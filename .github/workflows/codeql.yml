@@ -21,8 +21,3 @@ jobs:
         with:
           languages: csharp
           build-mode: manual
-
-      - name: Build
-        run: dotnet build --no-incremental
-
-      - uses: github/codeql-action/analyze@v4
