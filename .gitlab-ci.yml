@@ -3,6 +3,8 @@ stages:
 
 gitleaks:
   stage: security
-  image: zricethezav/gitleaks:latest
+  image:
+    name: gitleaks/gitleaks:latest
+    entrypoint: [""]
   script:
     - gitleaks detect --source . --verbose
